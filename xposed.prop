@@ -1,5 +1,0 @@
-version=90-beta3
-arch=arm64
-minsdk=27
-maxsdk=27
-requires:fbe_aware=1
