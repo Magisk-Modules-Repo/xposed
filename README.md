@@ -1,7 +1,11 @@
-# Magisk Installer
+# Systemless Xposed Framework
 
-**Update `README.md` if you want to submit your module to the online repo!**
+Please install my modified [XposedInstaller(3.1.5)](https://forum.xda-developers.com/attachment.php?attachmentid=4751403&d=1556682769) to properly detect Systemless Xposed.
 
-For more information about how to use this module installer, please refer to [documentations](https://topjohnwu.github.io/Magisk/guides.html)
+The APK is signed by my personal key, you might need to uninstall other versions before installing mine.
 
-If you are not familiar with the Markdown syntax, you can start by experimenting on GitHub's online Markdown editor, which will let you preview before publishing. If you need more help, the [Markdown Cheat Sheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) will be handy.
+The binaries are identical to builds downloaded from official links [https://dl-xda.xposed.info/framework/](https://dl-xda.xposed.info/framework/), with the exception that `app_process*` is patched with the following command:
+
+`sed -i 's:/system/xposed.prop\x0:/sbin/xposed.prop\x0\x0\x0:g' app_process*`
+
+This module most likely will never get any updates in the future, since @rovo89 seems to have stopped development. This module is here for historical reasons.
