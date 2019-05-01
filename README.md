@@ -1,5 +1,7 @@
 # Systemless Xposed Framework
 
+### This module is only for Android 5.0 to Android 8.1!
+
 Please install my modified [XposedInstaller(3.1.5)](https://forum.xda-developers.com/attachment.php?attachmentid=4751403&d=1556682769) to properly detect Systemless Xposed.
 
 The APK is signed by my personal key, you might need to uninstall other versions before installing mine.
