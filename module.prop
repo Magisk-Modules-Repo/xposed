@@ -1,6 +1,6 @@
-id=template
-name=Template Module
-version=v1
-versionCode=1
-author=topjohnwu
-description=A short description
+id=xposed
+name=Xposed Framework
+version=v90-beta3
+versionCode=9030
+author=rovo89
+description=The official Xposed Framework, packaged by @topjohnwu

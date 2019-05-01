@@ -28,7 +28,7 @@ SKIPMOUNT=false
 PROPFILE=false
 
 # Set to true if you need post-fs-data script
-POSTFSDATA=false
+POSTFSDATA=true
 
 # Set to true if you need late_start service script
 LATESTARTSERVICE=false
@@ -36,18 +36,6 @@ LATESTARTSERVICE=false
 ##########################################################################################
 # Replace list
 ##########################################################################################
-
-# List all directories you want to directly replace in the system
-# Check the documentations for more info why you would need this
-
-# Construct your list in the following format
-# This is an example
-REPLACE_EXAMPLE="
-/system/app/Youtube
-/system/priv-app/SystemUI
-/system/priv-app/Settings
-/system/framework
-"
 
 # Construct your own list here
 REPLACE="
@@ -123,7 +111,7 @@ REPLACE="
 
 print_modname() {
   ui_print "*******************************"
-  ui_print "     Magisk Module Template    "
+  ui_print "Xposed framework installer zip "
   ui_print "*******************************"
 }
 
@@ -133,7 +121,33 @@ on_install() {
   # The following is the default implementation: extract $ZIPFILE/system to $MODPATH
   # Extend/change the logic to whatever you want
   ui_print "- Extracting module files"
-  unzip -o "$ZIPFILE" 'system/*' -d $MODPATH >&2
+  unzip -o "$ZIPFILE" "$API/$ARCH/*" -d $TMPDIR >&2
+
+  XPOSEDDIR=$TMPDIR/$API/$ARCH
+  [ -d $XPOSEDDIR ] || abort "! Unsupported device"
+
+  if [ $API -ge 26 ]; then
+    XVERSION="90-beta3"
+    XPOSEDBRIDGE="XposedBridge.90.jar"
+  else
+    XVERSION="89"
+    XPOSEDBRIDGE="XposedBridge.89.jar"
+  fi
+
+  ui_print "- Xposed version: $XVERSION"
+  ui_print "- Device platform: $ARCH"
+
+  ui_print "- Copying files"
+  mkdir -p $MODPATH/system/framework
+  mv $TMPDIR/$XPOSEDBRIDGE $MODPATH/system/framework/XposedBridge.jar
+  cp -af $XPOSEDDIR/system/. $MODPATH/system
+  cat << EOF > $MODPATH/xposed.prop
+version=${XVERSION}
+arch=${ARCH}
+minsdk=${API}
+maxsdk=${API}
+EOF
+  [ $API -ge 26 ] && echo "requires:fbe_aware=1" >> $MODPATH/xposed.prop
 }
 
 # Only some special files require specific permissions
@@ -144,11 +158,18 @@ set_permissions() {
   # The following is the default rule, DO NOT remove
   set_perm_recursive $MODPATH 0 0 0755 0644
 
-  # Here are some examples:
-  # set_perm_recursive  $MODPATH/system/lib       0     0       0755      0644
-  # set_perm  $MODPATH/system/bin/app_process32   0     2000    0755      u:object_r:zygote_exec:s0
-  # set_perm  $MODPATH/system/bin/dex2oat         0     2000    0755      u:object_r:dex2oat_exec:s0
-  # set_perm  $MODPATH/system/lib/libart.so       0     0       0644
+  set_perm_recursive  $MODPATH/system/bin           0   2000    0755    0755
+  set_perm_check  $MODPATH/system/bin/app_process32       0   2000    0755    u:object_r:zygote_exec:s0
+  set_perm_check  $MODPATH/system/bin/app_process64       0   2000    0755    u:object_r:zygote_exec:s0
+  set_perm_check  $MODPATH/system/bin/dex2oat             0   2000    0755    u:object_r:dex2oat_exec:s0
+  set_perm_check  $MODPATH/system/bin/patchoat            0   2000    0755    u:object_r:zygote_exec:s0
+  set_perm_check  $MODPATH/system/bin/dexoptanalyzer      0   2000    0755    u:object_r:dexoptanalyzer_exec:s0
+  set_perm_check  $MODPATH/system/bin/profman             0   2000    0755    u:object_r:profman_exec:s0
 }
 
 # You can add more functions to assist your custom script code
+
+set_perm_check() {
+  [ -f "$1" ] || return
+  set_perm "$@"
+}
