@@ -9,5 +9,3 @@ The APK is signed by my personal key, you might need to uninstall other versions
 The binaries are identical to builds downloaded from official links [https://dl-xda.xposed.info/framework/](https://dl-xda.xposed.info/framework/), with the exception that `app_process*` is patched with the following command:
 
 `sed -i 's:/system/xposed.prop\x0:/sbin/xposed.prop\x0\x0\x0:g' app_process*`
-
-This module most likely will never get any updates in the future, since @rovo89 seems to have stopped development. This module is here for historical reasons.
