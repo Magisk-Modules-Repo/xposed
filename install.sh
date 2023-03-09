@@ -139,7 +139,7 @@ on_install() {
 
   ui_print "- Copying files"
   mkdir -p $MODPATH/system/framework
-  mv $TMPDIR/$XPOSEDBRIDGE $MODPATH/system/framework/XposedBridge.jar
+  cp -af $TMPDIR/$XPOSEDBRIDGE $MODPATH/system/framework/XposedBridge.jar
   cp -af $XPOSEDDIR/system/. $MODPATH/system
   cat << EOF > $MODPATH/xposed.prop
 version=${XVERSION}
